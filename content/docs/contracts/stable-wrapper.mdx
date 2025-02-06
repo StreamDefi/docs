@@ -1,0 +1,47 @@
+---
+title: StableWrapper
+---
+
+Implemented as 1-to-1 wrapper contract with delayed withdrawals to allow the vault owner to deposit funds (taken out of the strategy) back into the contract. The wrapped version of the token is bridgeable through LayerZero. While `allowIndependence` is false, only the `StreamVault` contract (which is set as the keeper) has the privilege to deposit for the user to ensure funds get auto staked in the `StreamVault` contract.
+
+#### depositToVault()
+
+Only callable by the `StreamVault` (as keeper). Used to transfer the underlying token to the `StableWrapper` contract, and mints the wrapped token directly to the keeper (StreamVault) in order to be auto staked. Emits a `DepositToVault` event
+
+#### initiateWithdrawalFromVault()
+
+Only callable by the `StreamVault`. Used to burn the wrapped token amount (transfered to the `StableWrapper` contract from the `StreamVault` contract before calling this func). This function creates a withdrawal receipt for the amount being withdrawn which can be completed through `completeWithdrawal` at a later epoch. Emits a `WithdrawalInitiated` event
+
+#### deposit()
+
+Only callable when `allowIndependence` is true. Contains the same functionality as `depositToVault()`, however it mints to the caller of the contract and does not auto stake. Emits an `Deposit` event
+
+#### initiateWithdrawal()
+
+Only callable when `allowIndependence` is true. Contains the same functionality as `initiateWithdrawalFromVault()`, however it burns from `msg.sender` instead of from the contract itself. Emits an `WithdrawalInitiated` event
+
+#### completeWithdrawal()
+
+This function is used to complete a withdrawal which transfers the underlying token from the contract back to specified address. This can only be called after either `initiateWithdrawal()` or `initiateWithdrawalFromVault()` has been called and an epoch (24 hours) has passed. If a new withdrawal is initiated while there are already available funds for withdrawal, all funds (both existing and newly requested) will be subject to a new epoch waiting period. This reset mechanism ensures proper accounting and fund availability. Emits a `Withdrawn` event.
+
+#### permissionedMint()
+
+Only callable by the `StreamVault` contract. Used to mint more wrapped token into the stream vault to account for positive yield. Emits a `PermissionedMint` event.
+
+#### permissionedBurn()
+
+Only callable by the `StreamVault` contract. Used to burn wrapped tokens owned by the `StreamVault` to account for negative yield. Emits a `PermissionedBurn` event.
+
+#### transferAsset()
+
+Only callable by the vault owner. Used to withdraw the funds that have been wrapped to the keepr to be used for yield farming. Emits an `AssetTransferred` event.
+
+#### processWithdrawals()
+
+This function, callable only by the owner, handles the settlement of deposits and withdrawals at the end of each epoch. It manages token flows based on the net difference between withdrawals and deposits:
+
+- If withdrawals exceed deposits (`withdrawalAmountForEpoch > depositAmountForEpoch`), the owner must provide (from current farming strategies) the additional tokens needed to cover the difference.
+- If deposits exceed withdrawals (`withdrawalAmountForEpoch < depositAmountForEpoch`), the excess tokens are sent to the owner.
+- If they are equal, no token transfer is needed.
+
+After processing, the function increments the epoch counter and resets both withdrawal and deposit amounts to zero for the new epoch. This mechanism ensures that the contract maintains proper token backing while efficiently managing capital utilization.

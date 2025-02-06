@@ -1,0 +1,7 @@
+---
+title: Yield Distribution
+---
+
+Yield is distributed once a day, which is set by the `vaultKeeper` on the call to `rollToNextRound()` in the `StreamVault` contract. At these discrete moments in time, yield is distributed evenly to all share token holders. When the round is rolled a call is made from the `StreamVault` contract to the `StableWrapper` contract to mint/burn the correct amount of wrapped tokens into the `StreamVault` contract to maintain a 1-1 peg between the wrapped token and underlying assets deposited.
+
+<Card>Yield can be both positive or negative at any given roll</Card>

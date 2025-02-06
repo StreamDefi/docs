@@ -1,13 +1,10 @@
 ---
-title: Hello World
-description: Your first document
+title: Introduction
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+Stream V2 constructs yield bearing vaults. There are two core pieces of infrasturcture:
 
-## What is Next?
+- The first is a simple wrapper contract which wraps the underlying token of the vault (i.e USDC for the StreamUSDC vault)
+- The second is the vault contract which allows users to stake this wrapped token and earn their proportional yield from the Stream's farmed yield. This is represented through a share token.
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
-</Cards>
+Both the wrapped version of the token and the share token are both natively bridgeable through LayerZero

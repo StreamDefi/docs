@@ -1,0 +1,14 @@
+{
+  "title": "Stream V2",
+  "pages": [
+    "index",
+    "resources",
+    "deployments",
+    "layerzero",
+    "implementation",
+    "yield-distribution",
+    "timing-mechanisms",
+    "risks",
+    "contracts"
+  ]
+}

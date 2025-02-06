@@ -1,0 +1,22 @@
+---
+title: Timing Mechanisms
+description: The protocol has different timing requirements for various operations.
+---
+
+### Vault Operations (Instant)
+
+- Staking into the vault is instant, but doesn't earn yield for the entry epoch
+- Unstaking from the vault is instant, but doesn't earn yield for the exit epoch
+- If you stake and unstake in the same epoch, you can use `instantUnstake()` to immediately withdraw
+
+### Unwrapping Operations (Delayed)
+
+- Unwrapping the Stream wrapped token back to the underlying token is a two-step process:
+  1. First, initiate the withdrawal
+  2. Complete the withdrawal after one epoch (24 hours) has passed
+- Important: If you initiate multiple withdrawals across different times, you must wait for the latest epoch to complete before withdrawing any funds. For example:
+  - If you initiate a withdrawal in epoch 1
+  - Then initiate another withdrawal in epoch 2 (without completing the first withdrawal)
+  - All funds (from both withdrawals) will only be available after epoch 2 completes
+
+This design allows for efficient vault operations while maintaining secure underlying token management.

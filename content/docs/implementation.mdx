@@ -1,0 +1,14 @@
+---
+title: Implementation
+---
+
+The token wrapper contract is called `StableWrapper`. Upon wrapping the token, the underlying deposited token will be used for yield farming while the user receives a 1-to-1 wrapped version of this token. The user will not be entitled to any yield unless they stake in the vault contract. To unwrap this token, there will be a 1 day delay in order to allow time for the vault keeper to deposit the underlying token back into the contract to allow for withdrawals to complete.
+
+<Card>
+  At the start all tokens will be required to be autostaked so all users will be
+  entitled to yield. This is handled through the `allowIndependence` flag on the
+  `StableWrapper` contract and may change in the future which will allow the
+  user to hold the wrapped token in itself.
+</Card>
+
+Upon staking the wrapped token (defined in the `StreamVault` contract), the user will receive shares representing their stake in the vault. These shares are non-rebasing tokens, meaning their quantity remains constant while the underlying value they represent may change based on accumulated yield.
