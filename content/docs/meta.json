@@ -4,6 +4,7 @@
     "index",
     "resources",
     "deployments",
+    "audit-report",
     "layerzero",
     "implementation",
     "yield-distribution",
